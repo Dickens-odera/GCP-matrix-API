@@ -21,24 +21,18 @@ class LocationController extends Controller
     {
         //$this->payload = $request->only('origin','destination');
         $api_key = config('services.google_maps.api_key');
-        $origin = $reguest->origin;
-        $destination = $reguest->destination;
+        $payload = array(
+            'origin'      => $reguest['origin'],
+            'destination' => $reguest['destination']
+        );
         $headers = ['Accept' => 'application/json'];
 
-        $url = 'https://maps.googleapis.com/maps/api/distancematrix/json?origins='.$origin.'&destinations='.$destination.'&key='.$api_key;
+        $url = 'https://maps.googleapis.com/maps/api/distancematrix/json?origins='.$payload['origin'].'&destinations='.$payload['destination'].'&key='.$api_key;
         try{
             $response = Http::withHeaders($headers)->post($url);
             return $response->body();
         }catch(Exception $e){
             return json_decode($e->getMessage());
         }
-        /*
-        //return $response['rows'];
-        if(!$response)
-        {
-            return response()->json(['error' => '','message' => 'Unauthenticated'], 500);
-        }
-        return $response->body();
-        **/
     }
 }
